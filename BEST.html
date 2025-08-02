@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Cheat PR1CE</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #2c2f33;
+    color: white;
+    margin: 0;
+    padding: 40px 30px 60px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Контейнер и звёзды */
+  #stars-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100px;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 15;
+  }
+  .star {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 3px white);
+    animation-timing-function: ease-in-out;
+    user-select: none;
+    animation-name: star-float;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+  @keyframes star-float {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(-15px) translateX(15px);
+      opacity: 1;
+    }
+  }
+
+  /* Меню с табами */
+  .tabs {
+    display: flex;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #0099ff, #66ccff);
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 4px 10px rgba(0, 153, 255, 0.6);
+    position: relative;
+    overflow: visible;
+    z-index: 10;
+    height: 60px;
+    align-items: center;
+  }
+  .tab {
+    padding: 12px 28px;
+    margin-right: 5px;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
+    position: relative;
+    z-index: 20;
+  }
+  .tab:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  .tab.active {
+    background-color: white;
+    color: #0099ff;
+    font-weight: 900;
+    box-shadow: inset 0 -3px 8px #0099ff;
+  }
+
+  /* Контент табов */
+  .tab-content {
+    display: none;
+    background-color: #23272a;
+    padding: 30px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  }
+  .tab-content.active {
+    display: block;
+  }
+
+  /* Логотип */
+  .logo {
+    font-size: 48px;
+    font-weight: bold;
+    color: #00ccff;
+    text-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff;
+    animation: pulse 2.5s infinite;
+    margin-bottom: 25px;
+    user-select: none;
+  }
+  @keyframes pulse {
+    0% {
+      text-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff;
+    }
+    50% {
+      text-shadow: 0 0 25px #00e6ff, 0 0 45px #00e6ff;
+    }
+    100% {
+      text-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff;
+    }
+  }
+
+  /* Цены */
+  .price-box {
+    margin-top: 40px;
+    padding: 20px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff, #00e0ff, #005baf);
+    background-size: 400% 400%;
+    animation: gradientMove 8s ease infinite;
+    border-radius: 16px;
+    color: white;
+    font-weight: 700;
+    font-size: 26px;
+    box-shadow: 0 0 30px rgba(0, 123, 255, 0.7);
+    user-select: none;
+  }
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .price-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 15px;
+    font-size: 22px;
+  }
+  .price-item {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 12px 24px;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition: background 0.3s;
+    user-select: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  .price-item:hover {
+    background: rgba(255, 255, 255, 0.30);
+    box-shadow: 0 0 20px rgba(0, 153, 255, 0.8);
+  }
+
+  /* Модальное окно */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0; top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+  }
+  .modal-content {
+    background: #ffffff;
+    color: #000;
+    padding: 30px 40px;
+    border-radius: 16px;
+    text-align: center;
+    font-size: 22px;
+    box-shadow: 0 0 35px rgba(0, 123, 255, 0.8);
+    position: relative;
+    max-width: 420px;
+    margin: 0 20px;
+    user-select: text;
+  }
+  .modal-content strong {
+    font-size: 28px;
+    color: #007bff;
+    display: block;
+    margin: 18px 0;
+    word-break: break-word;
+  }
+  .close-btn {
+    position: absolute;
+    top: 12px; right: 22px;
+    font-size: 28px;
+    color: #555;
+    cursor: pointer;
+    font-weight: 900;
+    user-select: none;
+    transition: color 0.3s;
+  }
+  .close-btn:hover {
+    color: #007bff;
+  }
+
+  /* Кнопка Discord */
+  .discord-btn {
+    display: inline-block;
+    margin-top: 35px;
+    padding: 16px 34px;
+    background: linear-gradient(135deg, #5865F2, #404EED);
+    color: white;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 14px;
+    box-shadow: 0 0 18px rgba(88, 101, 242, 0.75);
+    transition: transform 0.3s, box-shadow 0.3s;
+    user-select: none;
+  }
+  .discord-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(88, 101, 242, 1);
+  }
+
+  /* Текст "О нас" */
+  .about-text {
+    font-size: 20px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    color: #a9d1ff;
+    user-select: text;
+    white-space: pre-line;
+  }
+
+  /* Видео */
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 25px;
+    height: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0, 123, 255, 0.7);
+  }
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    user-select: none;
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- Звёзды -->
+  <div id="stars-container"></div>
+
+  <!-- Меню -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" onclick="showTab(0)">Главная</button>
+    <button class="tab" onclick="showTab(1)">О нас</button>
+    <button class="tab" onclick="showTab(2)">Контакты</button>
+  </div>
+
+  <!-- Контент -->
+  <div class="tab-content active">
+    <div class="logo">Cheat PR1CE</div>
+    <h2>Главная</h2>
+    <p>Добро пожаловать на наш сайт!</p>
+
+    <div class="price-box">
+      <div>Цена чита:</div>
+      <div class="price-list">
+        <div class="price-item" onclick="showCard()">🇺🇦 200 грн</div>
+        <div class="price-item" onclick="showCard()">🇷🇺 170 рублей</div>
+        <div class="price-item" onclick="showCard()">🇪🇺 3 евро</div>
+        <div class="price-item" onclick="showCard()">🇺🇸 3 USD</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content">
+    <h2>О нас</h2>
+    <p class="about-text">
+      Мы продаём софт, который пенит Hellhit.
+      Вот видео, можете посмотреть:
+    </p>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/YP7xepbA94E" allowfullscreen></iframe>
+    </div>
+    <p style="margin-top: 20px; font-weight: 700; color: #66ccff;">
+      Спасибо за покупку!
+    </p>
+  </div>
+
+  <div class="tab-content">
+    <h2>Контакты</h2>
+    <p>Свяжитесь с нами через Discord или email.</p>
+    <a href="https://discord.gg/Vy38F7Xu" target="_blank" class="discord-btn">DS сервер</a>
+  </div>
+
+  <!-- Модальное окно с картами -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeCard()">&times;</span>
+      <p>Для покупки и получения доступа напишите в Discord:</p>
+      <strong>tt_skil</strong>
+      <p style="margin-top: 12px; font-weight: 700; color: #007bff;">Карты для оплаты:</p>
+      <p>5168 7521 1611 6206</p>
+      <p>5424 0221 0001 8655</p>
+    </div>
+  </div>
+
+<script>
+  function showTab(index) {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach((tab, i) => {
+      tab.classList.toggle('active', i === index);
+      contents[i].classList.toggle('active', i === index);
+    });
+  }
+
+  function showCard() {
+    document.getElementById('modal').style.display = 'flex';
+  }
+
+  function closeCard() {
+    document.getElementById('modal').style.display = 'none';
+  }
+
+  // Создаем звезды
+  const starsContainer = document.getElementById('stars-container');
+  const starsCount = 35;
+
+  for (let i = 0; i < starsCount; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}px`;
+    star.style.animationDuration = `${2 + Math.random() * 3}s`;
+    star.style.animationDelay = `${Math.random() * 3}s`;
+    starsContainer.appendChild(star);
+  }
+</script>
+
+</body>
+</html>
